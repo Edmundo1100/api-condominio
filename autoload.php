@@ -2,10 +2,10 @@
 
 function autoload($className) {
   $className = str_replace('\\', '/', $className);
-  $file = './src/' . $className . '.php';
-
+  $file = __DIR__ .'/src/' . $className . '.php';
+  $file = str_replace('\\', '/', $file );
   if (file_exists($file)) {
-    require $file;
+    include $file;
   }
 }
 

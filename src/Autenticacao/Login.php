@@ -7,6 +7,6 @@ class Login
 
     public function ola()
     {
-        echo ('ola mundo aqui');
+        echo ('ola mundo aqui 3');
     }
 }

@@ -1,10 +1,12 @@
 <?php
 
-namespace Autenticacao;
+require_once 'autoload.php';
 
-require 'autoload.php';
+use Util\RotasUtil;
+use Validador\RequestValidador;
 
-
-$login =  new login();
-
-$login->ola();
+try {
+    $RequestValidator = new RequestValidador(RotasUtil::getRotas());
+} catch (Exception $exception) {
+    echo $exception->getMessage();
+}
