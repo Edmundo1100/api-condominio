@@ -1,12 +1,14 @@
 <?php
 
-require_once 'autoload.php';
+// require_once 'autoload.php';
+require_once 'config.php';
 
 use Util\RotasUtil;
-use Validador\RequestValidador;
+use Validator\RequestValidator;
 
 try {
-    $RequestValidator = new RequestValidador(RotasUtil::getRotas());
+    $RequestValidator = new RequestValidator(RotasUtil::getRotas());
+    $retorno = $RequestValidator->processarRequest();
 } catch (Exception $exception) {
     echo $exception->getMessage();
 }
