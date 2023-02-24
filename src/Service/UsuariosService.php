@@ -133,18 +133,14 @@ class UsuariosService
         [$login, $senha] = [$this->dadosCorpoRequest['login'], $this->dadosCorpoRequest['senha']];
         
         if ($login && $senha) {
-            if ($this->UsuariosRepository->getRegistroByLogin($login) > 0) {
+            if (count($this->UsuariosRepository->getRegistroByLogin($login)) > 0) {
                 throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_LOGIN_EXISTENTE);
             }
 
-            if ($this->UsuariosRepository->insertUser($login, $senha) > 0) {
-                $idInserido = $this->UsuariosRepository->getMySQL()->getDb()->lastInsertId();
-                $this->UsuariosRepository->getMySQL()->getDb()->commit();
+            $idInserido = $this->UsuariosRepository->insertUser($login, $senha);
+            if ($idInserido) {
                 return ['id_inserido' => $idInserido];
             }
-
-            $this->UsuariosRepository->getMySQL()->getDb()->rollBack();
-
             throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_GENERICO);
         }
         throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_LOGIN_SENHA_OBRIGATORIO);
@@ -153,14 +149,15 @@ class UsuariosService
     // =============================================================================
     private function deletar()
     {
-        return $this->UsuariosRepository->getMySQL()->delete(self::TABELA, $this->dados['id']);
+        // return $this->UsuariosRepository->getMySQL()->delete(self::TABELA, $this->dados['id']);
+        return $this->UsuariosRepository->delete($this->dados['id']);
     }
 
     // =============================================================================
     private function atualizar()
     {
         if ($this->UsuariosRepository->updateUser($this->dados['id'], $this->dadosCorpoRequest) > 0) {
-            $this->UsuariosRepository->getMySQL()->getDb()->commit();
+            // $this->UsuariosRepository->getMySQL()->getDb()->commit();
             return ConstantesGenericasUtil::MSG_ATUALIZADO_SUCESSO;
         }
         $this->UsuariosRepository->getMySQL()->getDb()->rollBack();
