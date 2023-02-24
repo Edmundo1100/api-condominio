@@ -1,13 +1,13 @@
 <?php
 
-function autoload($className) {
-  $className = str_replace('\\', '/', $className);
-  $file = './src/' . $className . '.php';
-
+function autoload($className)
+{
+  $className = str_replace('\\', DS, $className);
+  $file = DIR_APP . '/src/' . $className . '.php';
+  $file = str_replace('\\', DS, $file);
   if (file_exists($file)) {
-    require $file;
+    include $file;
   }
 }
 
 spl_autoload_register('autoload');
-
