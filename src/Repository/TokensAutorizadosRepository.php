@@ -11,6 +11,7 @@ class TokensAutorizadosRepository
     private object $database;
     public const TABELA = 'tokens_autorizados ';
 
+    // =================================================================================================
     public function __construct()
     {
         $this->database = new database();

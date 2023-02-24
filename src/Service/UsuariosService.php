@@ -9,7 +9,7 @@ use Util\ConstantesGenericasUtil;
 class UsuariosService
 {
     public const TABELA = 'usuarios';
-    public const RECURSOS_GET = ['listar'];
+    public const RECURSOS_GET = ['listarTodos', 'getLogin', 'getId'];
     public const RECURSOS_POST = ['cadastrar'];
     public const RECURSOS_DELETE = ['deletar'];
     public const RECURSOS_PUT = ['atualizar'];
@@ -19,32 +19,39 @@ class UsuariosService
     private object $UsuariosRepository;
 
 
+    // =============================================================================
     public function __construct($dados = [])
     {
         $this->dados = $dados;
         $this->UsuariosRepository = new UsuariosRepository();
     }
 
-    // GET
+    // =============================================================================
+    public function setDadosCorpoRequest($dadosCorpoRequest)
+    {
+        $this->dadosCorpoRequest = $dadosCorpoRequest;
+    }
+
+    // =============================================================================
+    // VALIDACAO GET
     // =============================================================================
     public function validarGet()
     {
         $retorno = null;
         $recurso = $this->dados['recurso'];
         if (in_array($recurso, self::RECURSOS_GET, true)) {
-            $retorno = $this->dados['id'] > 0 ? $this->getOneByKey() : $this->$recurso();
+            $retorno = $this->$recurso();
         } else {
             throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_RECURSO_INEXISTENTE);
         }
-
         if ($retorno === null) {
             throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_GENERICO);
         }
-
         return $retorno;
     }
 
-    // DELETE
+    // =============================================================================
+    // VALIDACAO DELETE
     // =============================================================================
     public function validarDelete()
     {
@@ -59,15 +66,14 @@ class UsuariosService
         } else {
             throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_RECURSO_INEXISTENTE);
         }
-
         if ($retorno === null) {
             throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_GENERICO);
         }
-
         return $retorno;
     }
 
-    // POST
+    // =============================================================================
+    // VALIDACAO POST
     // =============================================================================
     public function validarPost()
     {
@@ -78,15 +84,14 @@ class UsuariosService
         } else {
             throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_RECURSO_INEXISTENTE);
         }
-
         if ($retorno === null) {
             throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_GENERICO);
         }
-
         return $retorno;
     }
 
-    // PUT
+    // =============================================================================
+    // VALIDACAO PUT
     // =============================================================================
     public function validarPut()
     {
@@ -101,39 +106,47 @@ class UsuariosService
         } else {
             throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_RECURSO_INEXISTENTE);
         }
-
         if ($retorno === null) {
             throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_GENERICO);
         }
-
         return $retorno;
     }
 
     // =============================================================================
-    public function setDadosCorpoRequest($dadosCorpoRequest)
-    {
-        $this->dadosCorpoRequest = $dadosCorpoRequest;
-    }
-    
+    // LISTAR TODOS
     // =============================================================================
-    private function listar()
+    private function listarTodos()
     {
-        return $this->UsuariosRepository->getMySQL()->getAll(self::TABELA);
+        return $this->UsuariosRepository->getAllRegistros();
     }
-    
     // =============================================================================
-    private function getOneByKey()
+    // GET POR LOGIN
+    // =============================================================================
+    private function getLogin()
     {
-        return $this->UsuariosRepository->getMySQL()->getOneByKey(self::TABELA, $this->dados['id']);
+        return $this->UsuariosRepository->getPorLogin($this->dados['id']);
     }
-    
+
+    // =============================================================================
+    // GET POR ID
+    // =============================================================================
+    private function getId()
+    {
+        if($this->dados['id']){
+            return $this->UsuariosRepository->getPorId($this->dados['id']);
+        }
+        throw new InvalidArgumentException('Campo Id faltando');
+    }
+
+    // =============================================================================
+    // CADASTRAR
     // =============================================================================
     private function cadastrar()
     {
         [$login, $senha] = [$this->dadosCorpoRequest['login'], $this->dadosCorpoRequest['senha']];
-        
+
         if ($login && $senha) {
-            if (count($this->UsuariosRepository->getRegistroByLogin($login)) > 0) {
+            if (count($this->UsuariosRepository->getByLogin($login)) > 0) {
                 throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_LOGIN_EXISTENTE);
             }
 
@@ -145,14 +158,17 @@ class UsuariosService
         }
         throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_LOGIN_SENHA_OBRIGATORIO);
     }
-    
+
+    // =============================================================================
+    // DELETAR
     // =============================================================================
     private function deletar()
     {
-        // return $this->UsuariosRepository->getMySQL()->delete(self::TABELA, $this->dados['id']);
         return $this->UsuariosRepository->delete($this->dados['id']);
     }
 
+    // =============================================================================
+    // ATUALIZAR
     // =============================================================================
     private function atualizar()
     {

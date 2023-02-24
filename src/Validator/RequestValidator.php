@@ -46,6 +46,7 @@ class RequestValidator
         return $this->$metodo();
     }
 
+    // =============================================================================
     // GET
     // =============================================================================
     public function get()
@@ -64,6 +65,7 @@ class RequestValidator
         return $retorno;
     }
 
+    // =============================================================================
     // POST
     // =============================================================================
 
@@ -85,6 +87,7 @@ class RequestValidator
         throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_TIPO_ROTA);
     }
 
+    // =============================================================================
     // PUT
     // =============================================================================
     private function put()
@@ -105,6 +108,7 @@ class RequestValidator
         throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_TIPO_ROTA);
     }
 
+    // =============================================================================
     // DELETE
     // =============================================================================
     private function delete()

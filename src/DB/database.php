@@ -9,13 +9,11 @@ use Util\ConstantesGenericasUtil;
 class database
 {
     //======================================================================================================
-    //executes a query the the database (SELECT)
+    // SELECT
     //======================================================================================================
     public function EXE_SELECT($query, $parameters = null, $debug = true, $close_connection = true)
     {
-
         $results = null;
-
         //connection
         $connection = new PDO(
             'mysql:host=' . DB_SERVER .
@@ -25,12 +23,10 @@ class database
             DB_PASSWORD,
             array(PDO::ATTR_PERSISTENT => true)
         );
-
         if ($debug) {
             $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
         }
-
         //execution
         try {
             if ($parameters != null) {
@@ -45,22 +41,19 @@ class database
         } catch (PDOException $e) {
             return false;
         }
-
         //close connection
         if ($close_connection) {
             $connection = null;
         }
-
         //returns results
         return $results;
     }
 
     //======================================================================================================
-    //executes a query to the database (INSERT)
+    // INSERT - retorno o id inserido
     //======================================================================================================
     public function EXE_INSERT($query, $parameters = null, $debug = true, $close_connection = true)
     {
-
         //connection
         $connection = new PDO(
             'mysql:host=' . DB_SERVER .
@@ -70,12 +63,10 @@ class database
             DB_PASSWORD,
             array(PDO::ATTR_PERSISTENT => true)
         );
-
         if ($debug) {
             $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
         }
-
         //execution
         $connection->beginTransaction();
         try {
@@ -92,37 +83,35 @@ class database
             $connection->rollBack();
             return false;
         }
-
         //close connection
         if ($close_connection) {
             $connection = null;
         }
-
         return $idInserido;
     }
 
     //======================================================================================================
-    //executes a query to the database (UPDATE, DELETE)
+    // UPDATE, DELETE
     //======================================================================================================
-    public function EXE_NON_QUERY($query, $parameters = null, $debug = true, $close_connection = true)
+    public function EXE_UPDATE_DELETE($query, $parameters = null, $debug = true, $close_connection = true)
     {
-
         //connection
-        $connection = new PDO(
-            'mysql:host=' . DB_SERVER .
-                ';dbname=' . DB_NAME .
-                ';charset=' . DB_CHARSET,
-            DB_USERNAME,
-            DB_PASSWORD,
-            array(PDO::ATTR_PERSISTENT => true)
-        );
-
-        if ($debug) {
-            $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+        try {
+            $connection = new PDO(
+                'mysql:host=' . DB_SERVER .
+                    ';dbname=' . DB_NAME .
+                    ';charset=' . DB_CHARSET,
+                DB_USERNAME,
+                DB_PASSWORD,
+                array(PDO::ATTR_PERSISTENT => true)
+            );
+            if ($debug) {
+                $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+            }
+        } catch (PDOException $exception) {
+            throw new PDOException($exception->getMessage());
         }
-
-
         //execution
         $connection->beginTransaction();
         try {
@@ -139,12 +128,10 @@ class database
             $connection->rollBack();
             return false;
         }
-
         //close connection
         if ($close_connection) {
             $connection = null;
         }
-
-        return $linhasDeletadas > 0 ? ConstantesGenericasUtil::MSG_DELETADO_SUCESSO : ConstantesGenericasUtil::MSG_ERRO_NAO_AFETADO;
+        return $linhasDeletadas > 0 ? ConstantesGenericasUtil::MSG_SUCESSO : ConstantesGenericasUtil::MSG_ERRO_NAO_AFETADO;
     }
 }

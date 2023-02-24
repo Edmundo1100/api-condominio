@@ -9,14 +9,16 @@ class UsuariosRepository
     private object $database;
     const TABELA = 'usuarios ';
 
+    // =============================================================================
     public function __construct()
     {
         $this->database = new database();
     }
 
+    // =============================================================================
     // GET POR LOGIN
     // =============================================================================
-    public function getRegistroByLogin($login)
+    public function getPorLogin($login)
     {
         $params = [
             ':login' => $login,
@@ -29,17 +31,42 @@ class UsuariosRepository
         $result = $this->database->EXE_SELECT($query, $params);
         return $result;
     }
+    // =============================================================================
+    // GET POR ID
+    // =============================================================================
+    public function getPorId($id)
+    {
+        $params = [
+            ':id' => $id,
+        ];
 
+        $query = 'SELECT * FROM ' .
+            self::TABELA .
+            ' WHERE id = :id';
+
+        $result = $this->database->EXE_SELECT($query, $params);
+        return $result;
+    }
+
+    // =============================================================================
+    // GET TODOS
+    // =============================================================================
+    public function getAllRegistros()
+    {
+        $query = 'SELECT * FROM ' . self::TABELA;
+        $result = $this->database->EXE_SELECT($query);
+        return $result;
+    }
+
+    // =============================================================================
     // INSERT
     // =============================================================================
     public function insertUser($login, $senha)
     {
-
         $params = [
             ':login' => $login,
             ':senha' => $senha,
         ];
-
         $query = 'INSERT INTO ' .
             self::TABELA .
             ' (login, senha) VALUES (:login, :senha)';
@@ -48,6 +75,7 @@ class UsuariosRepository
         return $result;
     }
 
+    // =============================================================================
     // UPDATE
     // =============================================================================
     public function updateUser($id, $dados)
@@ -66,6 +94,7 @@ class UsuariosRepository
         return $result;
     }
 
+    // =============================================================================
     // DELETE
     // =============================================================================
     public function delete($id)
