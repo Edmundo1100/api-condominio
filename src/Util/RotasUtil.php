@@ -4,6 +4,7 @@ namespace Util;
 
 class RotasUtil
 {
+    // ===================================================================================================================
     public static function getRotas()
     {
         $urls = self::getUrls();
@@ -13,7 +14,8 @@ class RotasUtil
         $request['metodo'] = $_SERVER['REQUEST_METHOD'];
         return $request;
     }
-
+    
+    // ===================================================================================================================
     public static function getUrls()
     {
         $uri = str_replace('/' . DIR_PROJETO, '', $_SERVER['REQUEST_URI']);

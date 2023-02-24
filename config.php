@@ -6,10 +6,10 @@ error_reporting(E_ERROR);
 
 
 /* CONSTANTES DO BANCO */
-// define('HOST', 'localhost');
-// define('BANCO', 'producao');
-// define('USUARIO', 'usuario');
-// define('SENHA', 'senha');
+define('HOST', 'localhost');
+define('BANCO', 'producao');
+define('USUARIO', 'root');
+define('SENHA', '');
 
 /* OUTRAS CONSTANTES */
 define('DS', DIRECTORY_SEPARATOR);
