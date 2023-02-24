@@ -3,7 +3,7 @@
 namespace Service;
 
 use InvalidArgumentException;
-use Repository\UsuariosRepository;
+use Model\UsuariosRepository;
 use Util\ConstantesGenericasUtil;
 
 class UsuariosService

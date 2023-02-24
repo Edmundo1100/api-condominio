@@ -1,6 +1,6 @@
 <?php
 
-namespace Repository;
+namespace Model;
 
 use DB\database;
 

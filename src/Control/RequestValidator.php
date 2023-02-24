@@ -1,9 +1,9 @@
 <?php
 
-namespace Validator;
+namespace Control;
 
 use InvalidArgumentException;
-use Repository\TokensAutorizadosRepository;
+use Model\TokensAutorizadosRepository;
 use Service\UsuariosService;
 use Util\ConstantesGenericasUtil;
 use Util\JsonUtil;

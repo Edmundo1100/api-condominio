@@ -6,7 +6,7 @@ require_once 'config.php';
 use Util\ConstantesGenericasUtil;
 use Util\JsonUtil;
 use Util\RotasUtil;
-use Validator\RequestValidator;
+use Control\RequestValidator;
 
 try {
     $RequestValidator = new RequestValidator(RotasUtil::getRotas());
