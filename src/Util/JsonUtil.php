@@ -13,15 +13,15 @@ class JsonUtil
     {
         $dados = [];
         $dados[ConstantesGenericasUtil::TIPO] = ConstantesGenericasUtil::TIPO_ERRO;
-        
+
         if ((is_array($retorno) && count($retorno) > 0) || strlen($retorno) > 10) {
             $dados[ConstantesGenericasUtil::TIPO] = ConstantesGenericasUtil::TIPO_SUCESSO;
             $dados[ConstantesGenericasUtil::RESPOSTA] = $retorno;
         }
-        
+
         $this->retornarJson($dados);
     }
-    
+
     // ===================================================================================================================
     private function retornarJson($json)
     {
@@ -31,7 +31,7 @@ class JsonUtil
         echo json_encode($json, JSON_THROW_ON_ERROR, 1024);
         exit;
     }
-    
+
     // ===================================================================================================================
     public static function tratarCorpoRequisicaoJson()
     {

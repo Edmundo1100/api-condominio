@@ -10,7 +10,7 @@ class UsuariosService
 {
     public const TABELA = 'usuarios';
     public const RECURSOS_GET = ['listarTodos', 'getLogin', 'getId'];
-    public const RECURSOS_POST = ['cadastrar'];
+    public const RECURSOS_POST = ['login','cadastrar'];
     public const RECURSOS_DELETE = ['deletar'];
     public const RECURSOS_PUT = ['atualizar'];
 
@@ -132,7 +132,7 @@ class UsuariosService
     // =============================================================================
     private function getId()
     {
-        if($this->dados['id']){
+        if ($this->dados['id']) {
             return $this->UsuariosRepository->getPorId($this->dados['id']);
         }
         throw new InvalidArgumentException('Campo Id faltando');
@@ -178,5 +178,17 @@ class UsuariosService
         }
         $this->UsuariosRepository->getMySQL()->getDb()->rollBack();
         throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_NAO_AFETADO);
+    }
+
+    // =============================================================================
+    // LOGAR
+    // =============================================================================
+    private function login()
+    {
+        $this->dadosCorpoRequest;
+        if ($this->dados['id']) {
+            return $this->UsuariosRepository->getPorId($this->dados['id']);
+        }
+        throw new InvalidArgumentException('Campo Id faltando');
     }
 }

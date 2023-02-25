@@ -8,7 +8,7 @@ use Service\UsuariosService;
 use Util\ConstantesGenericasUtil;
 use Util\JsonUtil;
 
-class RequestValidator
+class RequestControl
 {
 
     private array $request;
@@ -41,7 +41,10 @@ class RequestValidator
         if ($this->request['metodo'] !== self::GET && $this->request['metodo'] !== self::DELETE) {
             $this->dadosRequest = JsonUtil::tratarCorpoRequisicaoJson();
         }
-        $this->TokensAutorizadosRepository->validarToken(getallheaders()['Authorization']);
+
+        if ($this->request['recurso'] !== 'login') {
+            $this->TokensAutorizadosRepository->validarToken(getallheaders()['Authorization']);
+        }
         $metodo = $this->request['metodo'];
         return $this->$metodo();
     }
