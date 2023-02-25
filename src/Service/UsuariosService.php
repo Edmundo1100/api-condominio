@@ -3,7 +3,7 @@
 namespace Service;
 
 use InvalidArgumentException;
-use Model\UsuariosRepository;
+use Model\UsuariosModel;
 use Util\ConstantesGenericasUtil;
 
 class UsuariosService
@@ -16,14 +16,14 @@ class UsuariosService
 
     private array $request;
     private array $params;
-    private object $UsuariosRepository;
+    private object $UsuariosModel;
 
 
     // =============================================================================
     public function __construct($request = [])
     {
         $this->request = $request;
-        $this->UsuariosRepository = new UsuariosRepository();
+        $this->UsuariosModel = new UsuariosModel();
     }
 
     // =============================================================================
@@ -117,14 +117,14 @@ class UsuariosService
     // =============================================================================
     private function listarTodos()
     {
-        return $this->UsuariosRepository->getAllRegistros();
+        return $this->UsuariosModel->getAllRegistros();
     }
     // =============================================================================
     // GET POR LOGIN
     // =============================================================================
     private function getLogin()
     {
-        return $this->UsuariosRepository->getPorLogin($this->request['id']);
+        return $this->UsuariosModel->getPorLogin($this->request['id']);
     }
 
     // =============================================================================
@@ -133,7 +133,7 @@ class UsuariosService
     private function getId()
     {
         if ($this->request['id']) {
-            return $this->UsuariosRepository->getPorId($this->request['id']);
+            return $this->UsuariosModel->getPorId($this->request['id']);
         }
         throw new InvalidArgumentException('Campo Id faltando');
     }
@@ -146,11 +146,11 @@ class UsuariosService
         [$login, $senha] = [$this->params['login'], $this->params['senha']];
 
         if ($login && $senha) {
-            if (count($this->UsuariosRepository->getByLogin($login)) > 0) {
+            if (count($this->UsuariosModel->getByLogin($login)) > 0) {
                 throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_LOGIN_EXISTENTE);
             }
 
-            $idInserido = $this->UsuariosRepository->insertUser($login, $senha);
+            $idInserido = $this->UsuariosModel->insertUser($login, $senha);
             if ($idInserido) {
                 return ['id_inserido' => $idInserido];
             }
@@ -164,7 +164,7 @@ class UsuariosService
     // =============================================================================
     private function deletar()
     {
-        return $this->UsuariosRepository->delete($this->request['id']);
+        return $this->UsuariosModel->delete($this->request['id']);
     }
 
     // =============================================================================
@@ -172,11 +172,11 @@ class UsuariosService
     // =============================================================================
     private function atualizar()
     {
-        if ($this->UsuariosRepository->updateUser($this->request['id'], $this->params) > 0) {
-            // $this->UsuariosRepository->getMySQL()->getDb()->commit();
+        if ($this->UsuariosModel->updateUser($this->request['id'], $this->params) > 0) {
+            // $this->UsuariosModel->getMySQL()->getDb()->commit();
             return ConstantesGenericasUtil::MSG_ATUALIZADO_SUCESSO;
         }
-        $this->UsuariosRepository->getMySQL()->getDb()->rollBack();
+        $this->UsuariosModel->getMySQL()->getDb()->rollBack();
         throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_NAO_AFETADO);
     }
 
@@ -187,7 +187,7 @@ class UsuariosService
     {
         $this->params;
         if ($this->request['id']) {
-            return $this->UsuariosRepository->getPorId($this->request['id']);
+            return $this->UsuariosModel->getPorId($this->request['id']);
         }
         throw new InvalidArgumentException('Campo Id faltando');
     }

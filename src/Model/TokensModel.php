@@ -6,7 +6,7 @@ use DB\database;
 use InvalidArgumentException;
 use Util\ConstantesGenericasUtil;
 
-class TokensAutorizadosRepository
+class TokensModel
 {
     private object $database;
     public const TABELA = 'tokens_autorizados ';

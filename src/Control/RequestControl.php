@@ -3,7 +3,7 @@
 namespace Control;
 
 use InvalidArgumentException;
-use Model\TokensAutorizadosRepository;
+use Model\TokensModel;
 use Service\UsuariosService;
 use Util\ConstantesGenericasUtil;
 use Util\JsonUtil;
@@ -21,7 +21,7 @@ class RequestControl
 
     public function __construct($request = [])
     {
-        $this->TokensAutorizadosRepository = new TokensAutorizadosRepository();
+        $this->TokensAutorizadosRepository = new TokensModel();
         $this->request = $request;
     }
 
@@ -39,7 +39,7 @@ class RequestControl
     private function direcionarRequest()
     {
         if ($this->request['metodo'] !== self::GET && $this->request['metodo'] !== self::DELETE) {
-            $this->params = JsonUtil::tratarPametros();
+            $this->params = JsonUtil::tratarParametros();
         }
 
         if ($this->request['recurso'] !== 'login') {

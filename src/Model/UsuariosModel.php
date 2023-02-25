@@ -4,7 +4,7 @@ namespace Model;
 
 use DB\database;
 
-class UsuariosRepository
+class UsuariosModel
 {
     private object $database;
     const TABELA = 'usuarios ';
