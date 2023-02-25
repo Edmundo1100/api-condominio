@@ -9,8 +9,8 @@ use Util\ConstantesGenericasUtil;
 class UsuariosService
 {
     public const TABELA = 'usuarios';
-    public const RECURSOS_GET = ['listarTodos', 'getLogin', 'getId'];
-    public const RECURSOS_POST = ['login','cadastrar'];
+    public const RECURSOS_GET = ['listarTodos', 'getUsuario', 'getId'];
+    public const RECURSOS_POST = ['login', 'cadastrar'];
     public const RECURSOS_DELETE = ['deletar'];
     public const RECURSOS_PUT = ['atualizar'];
 
@@ -120,11 +120,11 @@ class UsuariosService
         return $this->UsuariosModel->getAllRegistros();
     }
     // =============================================================================
-    // GET POR LOGIN
+    // GET POR USUARIO
     // =============================================================================
-    private function getLogin()
+    private function getUsuario()
     {
-        return $this->UsuariosModel->getPorLogin($this->request['id']);
+        return $this->UsuariosModel->getPorUsuario($this->request['id']);
     }
 
     // =============================================================================
@@ -143,14 +143,14 @@ class UsuariosService
     // =============================================================================
     private function cadastrar()
     {
-        [$login, $senha] = [$this->params['login'], $this->params['senha']];
+        [$usuario, $senha] = [$this->params['usuario'], $this->params['senha']];
 
-        if ($login && $senha) {
-            if (count($this->UsuariosModel->getByLogin($login)) > 0) {
+        if ($usuario && $senha) {
+            if (count($this->UsuariosModel->getByUsuario($usuario)) > 0) {
                 throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_LOGIN_EXISTENTE);
             }
 
-            $idInserido = $this->UsuariosModel->insertUser($login, $senha);
+            $idInserido = $this->UsuariosModel->insertUser($usuario, $senha);
             if ($idInserido) {
                 return ['id_inserido' => $idInserido];
             }
@@ -186,9 +186,9 @@ class UsuariosService
     private function login()
     {
         $this->params;
-        if ($this->request['id']) {
-            return $this->UsuariosModel->getPorId($this->request['id']);
+        if ($this->params['usuario'] && $this->params['senha']) {
+            return $this->UsuariosModel->logar($this->params);
         }
-        throw new InvalidArgumentException('Campo Id faltando');
+        throw new InvalidArgumentException('Faltando campos de Login e Senha');
     }
 }

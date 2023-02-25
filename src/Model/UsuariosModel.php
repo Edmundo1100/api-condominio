@@ -16,17 +16,34 @@ class UsuariosModel
     }
 
     // =============================================================================
-    // GET POR LOGIN
+    // LOGAR
     // =============================================================================
-    public function getPorLogin($login)
+    public function logar($params)
     {
         $params = [
-            ':login' => $login,
+            ':usuario' => $params['usuario'],
+            ':senha' => $params['senha'],
         ];
 
         $query = 'SELECT * FROM ' .
             self::TABELA .
-            ' WHERE login = :login';
+            ' WHERE usuario = :usuario and senha = :senha';
+
+        $result = $this->database->EXE_SELECT($query, $params);
+        return $result;
+    }
+    // =============================================================================
+    // GET POR USUARIO
+    // =============================================================================
+    public function getPorUsuario($usuario)
+    {
+        $params = [
+            ':usuario' => $usuario,
+        ];
+
+        $query = 'SELECT * FROM ' .
+            self::TABELA .
+            ' WHERE usuario = :usuario';
 
         $result = $this->database->EXE_SELECT($query, $params);
         return $result;
@@ -61,15 +78,15 @@ class UsuariosModel
     // =============================================================================
     // INSERT
     // =============================================================================
-    public function insertUser($login, $senha)
+    public function insertUser($usuario, $senha)
     {
         $params = [
-            ':login' => $login,
+            ':usuario' => $usuario,
             ':senha' => $senha,
         ];
         $query = 'INSERT INTO ' .
             self::TABELA .
-            ' (login, senha) VALUES (:login, :senha)';
+            ' (usuario, senha) VALUES (:usuario, :senha)';
 
         $result = $this->database->EXE_INSERT($query, $params);
         return $result;
@@ -82,12 +99,12 @@ class UsuariosModel
     {
         $params = [
             ':id' => $id,
-            ':login' => $dados['login'],
+            ':usuario' => $dados['usuario'],
             ':senha' => $dados['senha'],
         ];
         $query = 'UPDATE ' .
             self::TABELA .
-            'SET login = :login, senha = :senha 
+            'SET usuario = :usuario, senha = :senha 
             where id = :id';
 
         $result = $this->database->EXE_NON_QUERY($query, $params);
