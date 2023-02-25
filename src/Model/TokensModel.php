@@ -18,6 +18,30 @@ class TokensModel
     }
 
     // =================================================================================================
+    // CRIAR NOVO TOKEN
+    // =================================================================================================
+    public function criarNovoToken($dadosToken)
+    {
+        if ($dadosToken) {
+            $params = [
+                ':token' => $dadosToken['token'],
+                ':validade' => $dadosToken['validade']
+            ];
+
+            $query = 'INSERT INTO ' .
+                self::TABELA .
+                ' (token, validade) VALUES (:token, :validade)';
+
+            $result = $this->database->EXE_INSERT($query, $params);
+            if (!$result) {
+                throw new InvalidArgumentException('ERRO AO GERAR TOKEN');
+            }
+            return true;
+        } else {
+            throw new InvalidArgumentException('Falta dados do Token');
+        }
+    }
+    // =================================================================================================
     public function validarToken($token)
     {
         $token = str_replace([' ', 'Bearer'], '', $token);

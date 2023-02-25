@@ -2,8 +2,12 @@
 
 namespace Service;
 
+use Exception;
+use Firebase\JWT\SignatureInvalidException;
 use InvalidArgumentException;
+use Model\TokensModel;
 use Model\UsuariosModel;
+use Security\TokenSecurity;
 use Util\ConstantesGenericasUtil;
 
 class UsuariosService
@@ -187,8 +191,24 @@ class UsuariosService
     {
         $this->params;
         if ($this->params['usuario'] && $this->params['senha']) {
-            return $this->UsuariosModel->logar($this->params);
+            $sucess = $this->UsuariosModel->logar($this->params);
+            if ($sucess) {
+                return $this->gerarToken();
+            } else {
+                throw new SignatureInvalidException('USUARIO OU SENHA INCORRETOS');
+            }
         }
         throw new InvalidArgumentException('Faltando campos de Login e Senha');
+    }
+    private function gerarToken()
+    {
+        $geradorToken = new TokenSecurity();
+        $Dadostoken = $geradorToken->gerarToken();
+        $tokensModel = new TokensModel();
+        $tokenSalvo = $tokensModel->criarNovoToken($Dadostoken);
+        if ($tokenSalvo) {
+            return  array("token" => $Dadostoken['token']);
+        }
+        throw new Exception('ERRO AO SALVAR TOKEN');
     }
 }

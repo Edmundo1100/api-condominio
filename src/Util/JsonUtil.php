@@ -25,9 +25,12 @@ class JsonUtil
     // ===================================================================================================================
     private function retornarJson($json)
     {
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+        header("Access-Control-Allow-Headers: Content-Type, Authorization");
+        header("Access-Control-Allow-Credentials: true");
         header('Content-Type: application/json');
         header('Cache-Control: no-cache, no-store, must-revalidate');
-        header('Access-Control-Allow-Methods: OPTIONS,GET,POST,PUT,DELETE');
         echo json_encode($json, JSON_THROW_ON_ERROR, 1024);
         exit;
     }

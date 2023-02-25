@@ -30,7 +30,10 @@ class UsuariosModel
             ' WHERE usuario = :usuario and senha = :senha';
 
         $result = $this->database->EXE_SELECT($query, $params);
-        return $result;
+        if(count($result) === 1){
+            return true;
+        }
+        return false;
     }
     // =============================================================================
     // GET POR USUARIO

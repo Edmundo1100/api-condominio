@@ -32,11 +32,11 @@ abstract class ConstantesGenericasUtil
     public const MSG_ERRO_LOGIN_SENHA_OBRIGATORIO = 'Login e Senha são obrigatórios!';
 
     /* RETORNO JSON */
-    const TIPO_SUCESSO = 'sucesso';
-    const TIPO_ERRO = 'erro';
+    const TIPO_SUCESSO = 'SUCCESS';
+    const TIPO_ERRO = 'ERROR';
 
     /* OUTRAS */
     public const SIM = 'S';
-    public const TIPO = 'tipo';
-    public const RESPOSTA = 'resposta';
+    public const TIPO = 'type';
+    public const RESPOSTA = 'response';
 }

@@ -24,7 +24,6 @@ class RotasUtil
     // ===================================================================================================================
     public static function getUrls()
     {
-        var_dump($_SERVER);
         $uri = str_replace('/' . DIR_PROJETO, '', $_SERVER['REQUEST_URI']);
         return explode('/', trim($uri, '/'));
     }
