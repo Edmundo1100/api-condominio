@@ -33,15 +33,15 @@ class JsonUtil
     }
 
     // ===================================================================================================================
-    public static function tratarCorpoRequisicaoJson()
+    public static function tratarParametros()
     {
         try {
-            $postJson = json_decode(file_get_contents('php://input'), true, 512, JSON_THROW_ON_ERROR);
+            $params = json_decode(file_get_contents('php://input'), true, 512, JSON_THROW_ON_ERROR);
         } catch (JsonException $e) {
             throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERR0_JSON_VAZIO);
         }
-        if (is_array($postJson) && count($postJson) > 0) {
-            return $postJson;
+        if (is_array($params) && count($params) > 0) {
+            return $params;
         }
     }
 }

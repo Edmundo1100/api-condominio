@@ -14,22 +14,22 @@ class UsuariosService
     public const RECURSOS_DELETE = ['deletar'];
     public const RECURSOS_PUT = ['atualizar'];
 
-    private array $dados;
-    private array $dadosCorpoRequest;
+    private array $request;
+    private array $params;
     private object $UsuariosRepository;
 
 
     // =============================================================================
-    public function __construct($dados = [])
+    public function __construct($request = [])
     {
-        $this->dados = $dados;
+        $this->request = $request;
         $this->UsuariosRepository = new UsuariosRepository();
     }
 
     // =============================================================================
-    public function setDadosCorpoRequest($dadosCorpoRequest)
+    public function setDadosCorpoRequest($params)
     {
-        $this->dadosCorpoRequest = $dadosCorpoRequest;
+        $this->params = $params;
     }
 
     // =============================================================================
@@ -38,7 +38,7 @@ class UsuariosService
     public function validarGet()
     {
         $retorno = null;
-        $recurso = $this->dados['recurso'];
+        $recurso = $this->request['recurso'];
         if (in_array($recurso, self::RECURSOS_GET, true)) {
             $retorno = $this->$recurso();
         } else {
@@ -56,9 +56,9 @@ class UsuariosService
     public function validarDelete()
     {
         $retorno = null;
-        $recurso = $this->dados['recurso'];
+        $recurso = $this->request['recurso'];
         if (in_array($recurso, self::RECURSOS_DELETE, true)) {
-            if ($this->dados['id'] > 0) {
+            if ($this->request['id'] > 0) {
                 $retorno = $this->$recurso();
             } else {
                 throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_ID_OBRIGATORIO);
@@ -78,7 +78,7 @@ class UsuariosService
     public function validarPost()
     {
         $retorno = null;
-        $recurso = $this->dados['recurso'];
+        $recurso = $this->request['recurso'];
         if (in_array($recurso, self::RECURSOS_POST, true)) {
             $retorno = $this->$recurso();
         } else {
@@ -96,9 +96,9 @@ class UsuariosService
     public function validarPut()
     {
         $retorno = null;
-        $recurso = $this->dados['recurso'];
+        $recurso = $this->request['recurso'];
         if (in_array($recurso, self::RECURSOS_PUT, true)) {
-            if ($this->dados['id'] > 0) {
+            if ($this->request['id'] > 0) {
                 $retorno = $this->$recurso();
             } else {
                 throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_ID_OBRIGATORIO);
@@ -124,7 +124,7 @@ class UsuariosService
     // =============================================================================
     private function getLogin()
     {
-        return $this->UsuariosRepository->getPorLogin($this->dados['id']);
+        return $this->UsuariosRepository->getPorLogin($this->request['id']);
     }
 
     // =============================================================================
@@ -132,8 +132,8 @@ class UsuariosService
     // =============================================================================
     private function getId()
     {
-        if ($this->dados['id']) {
-            return $this->UsuariosRepository->getPorId($this->dados['id']);
+        if ($this->request['id']) {
+            return $this->UsuariosRepository->getPorId($this->request['id']);
         }
         throw new InvalidArgumentException('Campo Id faltando');
     }
@@ -143,7 +143,7 @@ class UsuariosService
     // =============================================================================
     private function cadastrar()
     {
-        [$login, $senha] = [$this->dadosCorpoRequest['login'], $this->dadosCorpoRequest['senha']];
+        [$login, $senha] = [$this->params['login'], $this->params['senha']];
 
         if ($login && $senha) {
             if (count($this->UsuariosRepository->getByLogin($login)) > 0) {
@@ -164,7 +164,7 @@ class UsuariosService
     // =============================================================================
     private function deletar()
     {
-        return $this->UsuariosRepository->delete($this->dados['id']);
+        return $this->UsuariosRepository->delete($this->request['id']);
     }
 
     // =============================================================================
@@ -172,7 +172,7 @@ class UsuariosService
     // =============================================================================
     private function atualizar()
     {
-        if ($this->UsuariosRepository->updateUser($this->dados['id'], $this->dadosCorpoRequest) > 0) {
+        if ($this->UsuariosRepository->updateUser($this->request['id'], $this->params) > 0) {
             // $this->UsuariosRepository->getMySQL()->getDb()->commit();
             return ConstantesGenericasUtil::MSG_ATUALIZADO_SUCESSO;
         }
@@ -185,9 +185,9 @@ class UsuariosService
     // =============================================================================
     private function login()
     {
-        $this->dadosCorpoRequest;
-        if ($this->dados['id']) {
-            return $this->UsuariosRepository->getPorId($this->dados['id']);
+        $this->params;
+        if ($this->request['id']) {
+            return $this->UsuariosRepository->getPorId($this->request['id']);
         }
         throw new InvalidArgumentException('Campo Id faltando');
     }

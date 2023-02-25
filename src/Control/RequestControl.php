@@ -12,7 +12,7 @@ class RequestControl
 {
 
     private array $request;
-    private array $dadosRequest;
+    private array $params;
     private object $TokensAutorizadosRepository;
 
     const GET = 'GET';
@@ -39,7 +39,7 @@ class RequestControl
     private function direcionarRequest()
     {
         if ($this->request['metodo'] !== self::GET && $this->request['metodo'] !== self::DELETE) {
-            $this->dadosRequest = JsonUtil::tratarCorpoRequisicaoJson();
+            $this->params = JsonUtil::tratarPametros();
         }
 
         if ($this->request['recurso'] !== 'login') {
@@ -79,7 +79,7 @@ class RequestControl
             switch ($this->request['rota']) {
                 case self::USUARIOS:
                     $UsuariosService = new UsuariosService($this->request);
-                    $UsuariosService->setDadosCorpoRequest($this->dadosRequest);
+                    $UsuariosService->setDadosCorpoRequest($this->params);
                     $retorno = $UsuariosService->validarPost();
                     break;
                 default:
@@ -100,7 +100,7 @@ class RequestControl
             switch ($this->request['rota']) {
                 case self::USUARIOS:
                     $UsuariosService = new UsuariosService($this->request);
-                    $UsuariosService->setDadosCorpoRequest($this->dadosRequest);
+                    $UsuariosService->setDadosCorpoRequest($this->params);
                     $retorno = $UsuariosService->validarPut();
                     break;
                 default:
