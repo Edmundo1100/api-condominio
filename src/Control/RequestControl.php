@@ -3,16 +3,16 @@
 namespace Control;
 
 use InvalidArgumentException;
-use Model\TokensAutorizadosRepository;
+use Model\TokensModel;
 use Service\UsuariosService;
 use Util\ConstantesGenericasUtil;
 use Util\JsonUtil;
 
-class RequestValidator
+class RequestControl
 {
 
     private array $request;
-    private array $dadosRequest;
+    private array $params;
     private object $TokensAutorizadosRepository;
 
     const GET = 'GET';
@@ -21,7 +21,7 @@ class RequestValidator
 
     public function __construct($request = [])
     {
-        $this->TokensAutorizadosRepository = new TokensAutorizadosRepository();
+        $this->TokensAutorizadosRepository = new TokensModel();
         $this->request = $request;
     }
 
@@ -39,9 +39,12 @@ class RequestValidator
     private function direcionarRequest()
     {
         if ($this->request['metodo'] !== self::GET && $this->request['metodo'] !== self::DELETE) {
-            $this->dadosRequest = JsonUtil::tratarCorpoRequisicaoJson();
+            $this->params = JsonUtil::tratarParametros();
         }
-        $this->TokensAutorizadosRepository->validarToken(getallheaders()['Authorization']);
+
+        if ($this->request['recurso'] !== 'login') {
+            $this->TokensAutorizadosRepository->validarToken(getallheaders()['Authorization']);
+        }
         $metodo = $this->request['metodo'];
         return $this->$metodo();
     }
@@ -76,7 +79,7 @@ class RequestValidator
             switch ($this->request['rota']) {
                 case self::USUARIOS:
                     $UsuariosService = new UsuariosService($this->request);
-                    $UsuariosService->setDadosCorpoRequest($this->dadosRequest);
+                    $UsuariosService->setDadosCorpoRequest($this->params);
                     $retorno = $UsuariosService->validarPost();
                     break;
                 default:
@@ -97,7 +100,7 @@ class RequestValidator
             switch ($this->request['rota']) {
                 case self::USUARIOS:
                     $UsuariosService = new UsuariosService($this->request);
-                    $UsuariosService->setDadosCorpoRequest($this->dadosRequest);
+                    $UsuariosService->setDadosCorpoRequest($this->params);
                     $retorno = $UsuariosService->validarPut();
                     break;
                 default:

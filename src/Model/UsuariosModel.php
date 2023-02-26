@@ -3,8 +3,9 @@
 namespace Model;
 
 use DB\database;
+use InvalidArgumentException;
 
-class UsuariosRepository
+class UsuariosModel
 {
     private object $database;
     const TABELA = 'usuarios ';
@@ -16,19 +17,39 @@ class UsuariosRepository
     }
 
     // =============================================================================
-    // GET POR LOGIN
+    // LOGAR
     // =============================================================================
-    public function getPorLogin($login)
+    public function logar($params)
     {
         $params = [
-            ':login' => $login,
+            ':usuario' => $params['usuario'],
+            ':senha' => $params['senha'],
         ];
 
         $query = 'SELECT * FROM ' .
             self::TABELA .
-            ' WHERE login = :login';
+            ' WHERE usuario = :usuario and senha = :senha';
 
-        $result = $this->database->EXE_SELECT($query, $params);
+        $result = $this->database->EXEC($query, $params);
+        if (count($result) === 1) {
+            return $result[0]['id_usu'];
+        }
+        return false;
+    }
+    // =============================================================================
+    // GET POR USUARIO
+    // =============================================================================
+    public function getPorUsuario($usuario)
+    {
+        $params = [
+            ':usuario' => $usuario,
+        ];
+
+        $query = 'SELECT * FROM ' .
+            self::TABELA .
+            ' WHERE usuario = :usuario';
+
+        $result = $this->database->EXE($query, $params);
         return $result;
     }
     // =============================================================================
@@ -61,15 +82,15 @@ class UsuariosRepository
     // =============================================================================
     // INSERT
     // =============================================================================
-    public function insertUser($login, $senha)
+    public function insertUser($usuario, $senha)
     {
         $params = [
-            ':login' => $login,
+            ':usuario' => $usuario,
             ':senha' => $senha,
         ];
         $query = 'INSERT INTO ' .
             self::TABELA .
-            ' (login, senha) VALUES (:login, :senha)';
+            ' (usuario, senha) VALUES (:usuario, :senha)';
 
         $result = $this->database->EXE_INSERT($query, $params);
         return $result;
@@ -82,12 +103,12 @@ class UsuariosRepository
     {
         $params = [
             ':id' => $id,
-            ':login' => $dados['login'],
+            ':usuario' => $dados['usuario'],
             ':senha' => $dados['senha'],
         ];
         $query = 'UPDATE ' .
             self::TABELA .
-            'SET login = :login, senha = :senha 
+            'SET usuario = :usuario, senha = :senha 
             where id = :id';
 
         $result = $this->database->EXE_NON_QUERY($query, $params);
@@ -108,5 +129,30 @@ class UsuariosRepository
 
         $result = $this->database->EXE_NON_QUERY($query, $params);
         return $result;
+    }
+    // =================================================================================================
+    // USUARIO TEM TOKEN
+    // =================================================================================================
+    public function usuarioPossuiToken($id_usu)
+    {
+        if ($id_usu) {
+            $params = [
+                ':id_usu' => $id_usu,
+            ];
+
+            $query = 'SELECT * FROM ' .
+                self::TABELA .
+                'INNER JOIN tokens_autorizados ' .
+                'ON usuarios.id_usu = tokens_autorizados.id_usu ' .
+                'WHERE usuarios.id_usu = :id_usu';
+
+            $result = $this->database->EXEC($query, $params);
+            if (count($result) === 1) {
+                return $result[0]['id_token'];
+            }
+            return false;
+        } else {
+            throw new InvalidArgumentException('Erro buscar token do usuario!');
+        }
     }
 }
