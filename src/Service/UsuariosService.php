@@ -2,8 +2,8 @@
 
 namespace Service;
 
+use DomainException;
 use Exception;
-use Firebase\JWT\SignatureInvalidException;
 use InvalidArgumentException;
 use Model\TokensModel;
 use Model\UsuariosModel;
@@ -185,17 +185,29 @@ class UsuariosService
     }
 
     // =============================================================================
-    // LOGAR
+    // LOGIN
     // =============================================================================
     private function login()
     {
         $this->params;
         if ($this->params['usuario'] && $this->params['senha']) {
-            $sucess = $this->UsuariosModel->logar($this->params);
-            if ($sucess) {
-                return $this->gerarToken();
+            $id_usu = $this->UsuariosModel->logar($this->params);
+            if ($id_usu) {
+                $dadostoken = $this->gerarToken();
+                if ($dadostoken) {
+                    $usurioPossuiToken = $this->UsuariosModel->usuarioPossuiToken($id_usu);
+                    $tokensModel =  new TokensModel();
+                    if ($usurioPossuiToken) {
+                        $tokenSalvo = $tokensModel->editarToken($id_usu, $dadostoken);
+                    } else {
+                        $tokenSalvo = $tokensModel->criarNovoToken($id_usu, $dadostoken);
+                    }
+                    if ($tokenSalvo) {
+                        return  array("token" => $dadostoken['token']);
+                    }
+                }
             } else {
-                throw new SignatureInvalidException('USUARIO OU SENHA INCORRETOS');
+                throw new DomainException('USUARIO OU SENHA INCORRETOS');
             }
         }
         throw new InvalidArgumentException('Faltando campos de Login e Senha');
@@ -203,12 +215,7 @@ class UsuariosService
     private function gerarToken()
     {
         $geradorToken = new TokenSecurity();
-        $Dadostoken = $geradorToken->gerarToken();
-        $tokensModel = new TokensModel();
-        $tokenSalvo = $tokensModel->criarNovoToken($Dadostoken);
-        if ($tokenSalvo) {
-            return  array("token" => $Dadostoken['token']);
-        }
-        throw new Exception('ERRO AO SALVAR TOKEN');
+        return  $geradorToken->gerarToken();
+        throw new Exception('ERRO AO GERAR TOKEN');
     }
 }

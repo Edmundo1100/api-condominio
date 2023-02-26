@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 //  CONSTANTES DO BANCO ============================================================= 
 define('DB_CHARSET',    'utf8');
 define('DB_SERVER',     'localhost');
-define('DB_NAME',       'producao');
+define('DB_NAME',       'condominio_desenv');
 define('DB_USERNAME',   'root');
 define('DB_PASSWORD',   '');
 // ==================================================================================

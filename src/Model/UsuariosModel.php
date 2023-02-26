@@ -3,6 +3,7 @@
 namespace Model;
 
 use DB\database;
+use InvalidArgumentException;
 
 class UsuariosModel
 {
@@ -29,9 +30,9 @@ class UsuariosModel
             self::TABELA .
             ' WHERE usuario = :usuario and senha = :senha';
 
-        $result = $this->database->EXE_SELECT($query, $params);
-        if(count($result) === 1){
-            return true;
+        $result = $this->database->EXEC($query, $params);
+        if (count($result) === 1) {
+            return $result[0]['id_usu'];
         }
         return false;
     }
@@ -48,7 +49,7 @@ class UsuariosModel
             self::TABELA .
             ' WHERE usuario = :usuario';
 
-        $result = $this->database->EXE_SELECT($query, $params);
+        $result = $this->database->EXE($query, $params);
         return $result;
     }
     // =============================================================================
@@ -128,5 +129,30 @@ class UsuariosModel
 
         $result = $this->database->EXE_NON_QUERY($query, $params);
         return $result;
+    }
+    // =================================================================================================
+    // USUARIO TEM TOKEN
+    // =================================================================================================
+    public function usuarioPossuiToken($id_usu)
+    {
+        if ($id_usu) {
+            $params = [
+                ':id_usu' => $id_usu,
+            ];
+
+            $query = 'SELECT * FROM ' .
+                self::TABELA .
+                'INNER JOIN tokens_autorizados ' .
+                'ON usuarios.id_usu = tokens_autorizados.id_usu ' .
+                'WHERE usuarios.id_usu = :id_usu';
+
+            $result = $this->database->EXEC($query, $params);
+            if (count($result) === 1) {
+                return $result[0]['id_token'];
+            }
+            return false;
+        } else {
+            throw new InvalidArgumentException('Erro buscar token do usuario!');
+        }
     }
 }

@@ -9,21 +9,36 @@ class JsonUtil
 {
 
     // ===================================================================================================================
-    public function processarArrayParaRetornar($retorno)
+    // ENTRADA
+    // ===================================================================================================================
+    public static function tratarParametros()
     {
-        $dados = [];
-        $dados[ConstantesGenericasUtil::TIPO] = ConstantesGenericasUtil::TIPO_ERRO;
-
-        if ((is_array($retorno) && count($retorno) > 0) || strlen($retorno) > 10) {
-            $dados[ConstantesGenericasUtil::TIPO] = ConstantesGenericasUtil::TIPO_SUCESSO;
-            $dados[ConstantesGenericasUtil::RESPOSTA] = $retorno;
+        try {
+            $params = json_decode(file_get_contents('php://input'), true, 512, JSON_THROW_ON_ERROR);
+        } catch (JsonException $e) {
+            throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERR0_JSON_VAZIO);
         }
-
-        $this->retornarJson($dados);
+        if (is_array($params) && count($params) > 0) {
+            return $params;
+        }
     }
 
     // ===================================================================================================================
-    private function retornarJson($json)
+    // SAIDA SUCCESS
+    // ===================================================================================================================
+    public function montarSuccess($retorno)
+    {
+        $dadosRetorno = [];
+        $dadosRetorno[ConstantesGenericasUtil::TIPO] = ConstantesGenericasUtil::TIPO_ERRO;
+
+        if ((is_array($retorno) && count($retorno) > 0) || strlen($retorno) > 10) {
+            $dadosRetorno[ConstantesGenericasUtil::TIPO] = ConstantesGenericasUtil::TIPO_SUCESSO;
+            $dadosRetorno[ConstantesGenericasUtil::RESPOSTA] = $retorno;
+        }
+        $this->retornarSuccessJson($dadosRetorno);
+    }
+
+    private function retornarSuccessJson($json)
     {
         header("Access-Control-Allow-Origin: *");
         header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
@@ -36,15 +51,22 @@ class JsonUtil
     }
 
     // ===================================================================================================================
-    public static function tratarParametros()
+    // SAIDA ERROR
+    // ===================================================================================================================
+    public function montarError($mensagemErro)
     {
-        try {
-            $params = json_decode(file_get_contents('php://input'), true, 512, JSON_THROW_ON_ERROR);
-        } catch (JsonException $e) {
-            throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERR0_JSON_VAZIO);
-        }
-        if (is_array($params) && count($params) > 0) {
-            return $params;
-        }
+        $dadosRetorno = [];
+        $dadosRetorno[ConstantesGenericasUtil::TIPO] = ConstantesGenericasUtil::TIPO_ERRO;
+        $dadosRetorno[ConstantesGenericasUtil::RESPOSTA] = $mensagemErro;
+        $this->retornarErroJson($dadosRetorno);
+    }
+    private function retornarErroJson($json)
+    {
+        http_response_code(400);
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+        header("Access-Control-Allow-Headers: Content-Type");
+        echo json_encode($json, JSON_THROW_ON_ERROR, 512);
+        exit;
     }
 }

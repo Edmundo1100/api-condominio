@@ -20,19 +20,20 @@ class TokensModel
     // =================================================================================================
     // CRIAR NOVO TOKEN
     // =================================================================================================
-    public function criarNovoToken($dadosToken)
+    public function criarNovoToken($id_usu, $dadosToken)
     {
         if ($dadosToken) {
             $params = [
                 ':token' => $dadosToken['token'],
-                ':validade' => $dadosToken['validade']
+                ':validade' => $dadosToken['validade'],
+                ':id_usu' => $id_usu,
             ];
 
             $query = 'INSERT INTO ' .
                 self::TABELA .
-                ' (token, validade) VALUES (:token, :validade)';
+                ' (token, validade, id_usu) VALUES (:token, :validade, :id_usu)';
 
-            $result = $this->database->EXE_INSERT($query, $params);
+            $result = $this->database->EXEC($query, $params);
             if (!$result) {
                 throw new InvalidArgumentException('ERRO AO GERAR TOKEN');
             }
@@ -41,6 +42,33 @@ class TokensModel
             throw new InvalidArgumentException('Falta dados do Token');
         }
     }
+    // =================================================================================================
+    // EDITA TOKEN
+    // =================================================================================================
+    public function editarToken($id_usu, $dadosToken)
+    {
+        if ($dadosToken) {
+            $params = [
+                ':token' => $dadosToken['token'],
+                ':validade' => $dadosToken['validade'],
+                ':id_usu' => $id_usu,
+            ];
+
+            $query = 'UPDATE ' .
+            self::TABELA .
+            'SET token = :token, validade = :validade 
+            where id_usu = :id_usu';
+
+            $result = $this->database->EXEC($query, $params);
+            if (!$result) {
+                throw new InvalidArgumentException('ERRO AO GERAR TOKEN');
+            }
+            return true;
+        } else {
+            throw new InvalidArgumentException('Falta dados do Token');
+        }
+    }
+
     // =================================================================================================
     public function validarToken($token)
     {
