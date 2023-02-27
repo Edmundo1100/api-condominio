@@ -14,8 +14,8 @@ class TokenSecurity
     {
         # // Defina as informações do payload
         $payload = array(
-            "key1" => base64_encode(random_bytes(10)),
-            "key2" => base64_encode(random_bytes(15)),
+            "key1" => base64_encode(random_bytes(2)),
+            "key2" => base64_encode(random_bytes(3)),
         );
 
         // Defina a chave secreta (deve ser mantida em segredo)
@@ -27,7 +27,8 @@ class TokenSecurity
         // Crie o token JWT
         $token = JWT::encode($payload, $key, 'HS256');
 
-        $dadosToken['token'] = $token;
+        // $dadosToken['token'] = $token;
+        $dadosToken['token'] = '123';
         $dadosToken['validade'] = $exp_time;
 
         // Exiba o token gerado

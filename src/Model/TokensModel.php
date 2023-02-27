@@ -73,18 +73,16 @@ class TokensModel
     public function validarToken($token)
     {
         $token = str_replace([' ', 'Bearer'], '', $token);
-
         if ($token) {
             $params = [
                 ':token' => $token,
-                ':status' => ConstantesGenericasUtil::SIM
             ];
 
-            $query = 'SELECT id FROM ' .
+            $query = 'SELECT * FROM ' .
                 self::TABELA .
-                'WHERE token = :token AND status = :status';
+                'WHERE token = :token';
 
-            $result = $this->database->EXE_SELECT($query, $params);
+            $result = $this->database->EXEC($query, $params);
             if (!$result) {
                 header("HTTP/1.1 401 Unauthorized");
                 throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_TOKEN_NAO_AUTORIZADO);

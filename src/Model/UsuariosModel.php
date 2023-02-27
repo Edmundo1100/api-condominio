@@ -49,7 +49,7 @@ class UsuariosModel
             self::TABELA .
             ' WHERE usuario = :usuario';
 
-        $result = $this->database->EXE($query, $params);
+        $result = $this->database->EXEC($query, $params);
         return $result;
     }
     // =============================================================================
@@ -65,7 +65,7 @@ class UsuariosModel
             self::TABELA .
             ' WHERE id = :id';
 
-        $result = $this->database->EXE_SELECT($query, $params);
+        $result = $this->database->EXEC($query, $params);
         return $result;
     }
 
@@ -75,7 +75,7 @@ class UsuariosModel
     public function getAllRegistros()
     {
         $query = 'SELECT * FROM ' . self::TABELA;
-        $result = $this->database->EXE_SELECT($query);
+        $result = $this->database->EXEC($query);
         return $result;
     }
 
@@ -92,7 +92,7 @@ class UsuariosModel
             self::TABELA .
             ' (usuario, senha) VALUES (:usuario, :senha)';
 
-        $result = $this->database->EXE_INSERT($query, $params);
+        $result = $this->database->EXEC($query, $params);
         return $result;
     }
 
@@ -111,7 +111,7 @@ class UsuariosModel
             'SET usuario = :usuario, senha = :senha 
             where id = :id';
 
-        $result = $this->database->EXE_NON_QUERY($query, $params);
+        $result = $this->database->EXEC($query, $params);
         return $result;
     }
 
@@ -127,7 +127,7 @@ class UsuariosModel
             self::TABELA .
             'WHERE id = :id';
 
-        $result = $this->database->EXE_NON_QUERY($query, $params);
+        $result = $this->database->EXEC($query, $params);
         return $result;
     }
     // =================================================================================================

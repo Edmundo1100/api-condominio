@@ -14,7 +14,7 @@ class UsuariosService
 {
     public const TABELA = 'usuarios';
     public const RECURSOS_GET = ['listarTodos', 'getUsuario', 'getId'];
-    public const RECURSOS_POST = ['login', 'cadastrar'];
+    public const RECURSOS_POST = ['login','cadastrar'];
     public const RECURSOS_DELETE = ['deletar'];
     public const RECURSOS_PUT = ['atualizar'];
 
@@ -150,7 +150,7 @@ class UsuariosService
         [$usuario, $senha] = [$this->params['usuario'], $this->params['senha']];
 
         if ($usuario && $senha) {
-            if (count($this->UsuariosModel->getByUsuario($usuario)) > 0) {
+            if (count($this->UsuariosModel->getPorUsuario($usuario)) > 0) {
                 throw new InvalidArgumentException(ConstantesGenericasUtil::MSG_ERRO_LOGIN_EXISTENTE);
             }
 
