@@ -13,7 +13,7 @@ class database
     //======================================================================================================
     // CONTROLER
     //======================================================================================================
-    public function EXEC($query, $parameters)
+    public function EXEC($query, $parameters = null)
     {
         $acao = $this->tipoAcao($query);
         switch ($acao) {
